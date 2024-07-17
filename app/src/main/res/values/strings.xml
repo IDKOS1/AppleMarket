@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AppleMarket</string>
+    <string name="detail_maner_temp"><u>매너온도</u></string>
+    <string name="detail_title">제목 입력란</string>
+    <string name="detail_content">내용 입력란</string>
+    <string name="detail_nickname">닉네임 입력</string>
+    <string name="detail_adress">거주지 입력</string>
+    <string name="detail_temp">39.3 ℃</string>
+    <string name="detail_temp_emoji">😉</string>
 </resources>
