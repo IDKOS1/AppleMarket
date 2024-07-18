@@ -49,7 +49,7 @@ class ProductAdapter(val mItems: MutableList<Product>) : RecyclerView.Adapter<Pr
         return mItems.size
     }
 
-    inner class Holder(val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class Holder(binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
         val productImage = binding.ivProduct
         val title = binding.tvProductTitle
         var price = binding.tvPrice
