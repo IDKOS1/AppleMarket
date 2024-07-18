@@ -11,20 +11,25 @@ object ProductController {
         return products.map { it.copy() }
     }
 
-    fun handleLike(id: Int, isLiked: Boolean): Boolean {
-        getProductById(id)?.let {
-            if (it.isLiked != isLiked) {
-                it.isLiked = isLiked
-                it.likes += if (isLiked) +1 else -1
-            }
-            return true
-        }
-        return false
-    }
-
     fun deleteProduct(item: Product) = products.remove(item)
 
-    private fun getProductById(id: Int) = products.find { it.id == id }
+    // 좋아요 버튼 눌렀을 때의 코드
+    // 싱글톤으로 있는 products와 파라미터로 받은 item의 id를 비교,
+    // 동일한 id를 가진 products안의 Product 객체의 데이터를 변화
+    fun clickedLike(item: Product, isChecked: Boolean) {
+        findProductId(item.id).let {
+            it!!.isLiked = isChecked
+            if (isChecked) {
+                it.likes++
+            } else {
+                it.likes--
+            }
+        }
+    }
+
+    fun findProductId(id: Int): Product? {
+        return products.find { it.id == id }
+    }
 
     private fun init() {
         products = mutableListOf(

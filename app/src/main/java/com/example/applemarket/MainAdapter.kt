@@ -1,5 +1,6 @@
 package com.example.applemarket
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,12 @@ class ProductAdapter(val mItems: MutableList<Product>) : RecyclerView.Adapter<Pr
         fun onClick(view : View, position : Int)
     }
 
+    interface ItemLongClick {
+        fun onLongClick(view : View, position : Int)
+    }
+
     var itemClick : ItemClick? = null
-
-
+    var itemLongClick : ItemLongClick? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,6 +33,10 @@ class ProductAdapter(val mItems: MutableList<Product>) : RecyclerView.Adapter<Pr
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.itemView.setOnClickListener {  //클릭이벤트추가부분
             itemClick?.onClick(it, position)
+        }
+        holder.itemView.setOnLongClickListener {
+            itemLongClick?.onLongClick(it, position)
+            true
         }
         val product = ProductController.getProducts()[position]
         val format = DecimalFormat("#,###")
@@ -47,6 +55,12 @@ class ProductAdapter(val mItems: MutableList<Product>) : RecyclerView.Adapter<Pr
 
     override fun getItemCount(): Int {
         return mItems.size
+    }
+
+    fun deleteItem(position: Int) {
+        mItems.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, mItems.size)
     }
 
     inner class Holder(binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {

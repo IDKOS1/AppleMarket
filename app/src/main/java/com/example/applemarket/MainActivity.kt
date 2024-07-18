@@ -36,9 +36,13 @@ class MainActivity : AppCompatActivity() {
 
         initFloatingButton()
 
+        // 뒤로가기 눌렀을 때 dialog 출력
+        // 결과값 콜백함수로 전달 및 로직 실행
         onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                dialog("종료", "정말 종료하시겠습니까?")
+                dialog("종료", "정말 종료하시겠습니까?") { result ->
+                    if (result) finish()
+                }
             }
         })
 
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
             Log.i("Noti", "Notification Clicked")
             notification()
         }
+
 
         binding.rcvProductsList.apply {
             val products = ProductController.getProducts().toMutableList()
@@ -61,6 +66,19 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, DetailActivity::class.java)
                     intent.putExtra("product", products[position])
                     startActivity(intent)
+                }
+            }
+
+            adapter.itemLongClick = object : ProductAdapter.ItemLongClick {
+                override fun onLongClick(view: View, position: Int) {
+                    dialog("삭제하기", "정말 삭제 하시겠습니까?") { result ->
+                        if (result) {
+                            ProductController.deleteProduct(products[position])
+                            adapter.deleteItem(position)
+                        } else {
+                            Log.i("Delete", "Cancel Clicked")
+                        }
+                    }
                 }
             }
         }
@@ -79,6 +97,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.rcvProductsList.adapter?.notifyDataSetChanged()
     }
 
     private fun initFloatingButton() {
@@ -166,9 +189,8 @@ class MainActivity : AppCompatActivity() {
         manager.notify(11, builder.build())
     }
 
-    fun dialog(title: String, content: String) {
-
-        var builder = AlertDialog.Builder(this)
+    fun dialog(title: String, content: String, callback: (Boolean) -> Unit) {
+        val builder = AlertDialog.Builder(this)
         builder.setTitle(title)
         builder.setMessage(content)
         builder.setIcon(R.mipmap.ic_launcher)
@@ -176,8 +198,8 @@ class MainActivity : AppCompatActivity() {
         val listener = object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 when (p1) {
-                    DialogInterface.BUTTON_POSITIVE ->
-                        finish()
+                    DialogInterface.BUTTON_POSITIVE -> callback(true)
+                    DialogInterface.BUTTON_NEGATIVE -> callback(false)
                 }
             }
         }

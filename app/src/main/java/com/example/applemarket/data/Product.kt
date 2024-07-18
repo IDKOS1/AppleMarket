@@ -12,7 +12,7 @@ data class Product(
     val seller: String,         // 판매자
     val price: Int,             // 가격
     val address: String,        // 주소
-    var likes: Int,             // 좋아요
-    val chat: Int,              // 채팅
+    var likes: Int,             // 좋아요 수
+    val chat: Int,              // 채팅 수
     var isLiked: Boolean = false// 좋아요 여부
 ) : Parcelable
